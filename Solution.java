@@ -1,18 +1,45 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class Solution {
     public boolean canConstruct(String ransomNote, String magazine) {
-        char[] r = ransomNote.toCharArray();
-        char[] m = magazine.toCharArray();
-        int count = 0;
 
-        for (int i = 0; i < r.length; i++) {
-            for (int j = 0; j < m.length ; j++) {
-                if (r[i] == m[j]) {
-                    r[i] = 1;
-                    m[j] = 0;
-                    count++;
-                }
+        Map<Character, Integer> mapR = new HashMap<>();
+        Map<Character, Integer> mapM = new HashMap<>();
+        for (int i = 0; i < ransomNote.length(); i++) {
+            if (!mapR.containsKey(ransomNote.charAt(i)))
+                mapR.put(ransomNote.charAt(i), 1);
+            else {
+                Integer count = mapR.get(ransomNote.charAt(i));
+                mapR.put(ransomNote.charAt(i), ++count);
             }
         }
-        return count == r.length;
+
+        for (int i = 0; i < magazine.length(); i++) {
+            if (!mapM.containsKey(magazine.charAt(i)))
+                mapM.put(magazine.charAt(i), 1);
+            else {
+                Integer count = mapM.get(magazine.charAt(i));
+                mapM.put(magazine.charAt(i), ++count);
+            }
+        }
+
+        for (char key : mapR.keySet()) {
+            if (!mapM.containsKey(key)) {
+                return false;
+            }
+        }
+
+        for (Map.Entry<Character, Integer> entry : mapR.entrySet()) {
+            char key = entry.getKey();
+            Integer value1 = entry.getValue();
+            Integer value2 = mapM.get(key);
+            if (value1>value2) {
+                return false;
+            }
+        }
+
+        //throw new RuntimeException(String.valueOf(mapR)+ mapM);
+        return true;
     }
 }
